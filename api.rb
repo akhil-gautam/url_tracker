@@ -33,6 +33,12 @@ namespace '/api/v1' do
     halt 422, { message: e.message}.to_json
   end
 
+  get '/users/:id/links' do
+    LinksController.index(params).to_json
+  rescue Exception => e
+    halt 422, { message: e.message }.to_json
+  end
+
   post '/links' do
     if params[:token].length == 24 && User.exists?({ token: params[:token]})
       result = LinksController.create(params)
@@ -40,6 +46,23 @@ namespace '/api/v1' do
     else
       halt 401, { message: "Can't find the user."}.to_json
     end
+  rescue Exception => e
+    halt 422, { message: e.message }.to_json
+  end
+
+  patch '/links/:id ' do
+    if params[:token].length == 24 && User.exists?({ token: params[:token]})
+      result = LinksController.update(params)
+      { message: "Updated successfuly."}.to_json
+    else
+      halt 401, { message: "Can't find the user."}.to_json
+    end
+  rescue Exception => e
+    halt 422, { message: e.message }.to_json
+  end
+
+  get '/links/:id/hits' do
+    LinkHitsController.index(params).to_json
   rescue Exception => e
     halt 422, { message: e.message }.to_json
   end

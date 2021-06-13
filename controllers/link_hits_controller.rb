@@ -1,6 +1,11 @@
 module LinkHitsController
   module_function
 
+  def index(params)
+    validate_params(params)
+    LinkHit.find_by({ link_id: params[:id] })
+  end
+
   def create(params)
     link = get_link(params[:id])
     LinkHit.create(link_hit_params(params.merge({ link_id: link["id"]})))
@@ -17,6 +22,14 @@ module LinkHitsController
       link.first
     else
       raise Exception, "Link not found."
+    end
+  end
+
+  def validate_params(params)
+    if params[:id].nil?
+      raise ArgumentError, "ID must be provided."
+    else
+      true
     end
   end
 end

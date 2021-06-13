@@ -28,6 +28,16 @@ module Lib
       post_req(body)
     end
 
+    def update(table, params)
+      body = {
+        operation: "update",
+        schema:  "dev",
+        table: table,
+        records: [ params ]
+      }
+      post_req(body)
+    end
+
     def first(table)
       body = {
         operation: "sql",
@@ -37,7 +47,12 @@ module Lib
     end
 
     def find(table, id)
-      find_by(table, 'id', id).first
+      record = find_by(table, 'id', id)
+      if record.first.nil?
+        raise Exception, "Record not found."
+      else
+        record.first
+      end
     end
     
     def find_by(table, by, value)
