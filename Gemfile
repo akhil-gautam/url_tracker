@@ -6,6 +6,7 @@ gem 'httparty'
 gem 'pry'
 gem 'bcrypt'
 gem 'sinatra-cross_origin'
+gem 'rack-contrib'
 
 group :production do
   gem "puma"

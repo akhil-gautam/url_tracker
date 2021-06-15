@@ -6,7 +6,8 @@ module UsersController
   end
 
   def login(params)
-    { token: User.validate(user_params(params))["token"] }
+    user = User.validate(user_params(params))
+    { token: user["token"], email: user["email"], id: user["id"] }
   end
 
 
