@@ -9,6 +9,21 @@ require_relative './lib/utils'
 Dir["./models/*.rb"].each {|file| load file }
 Dir["./controllers/*.rb"].each {|file| load file }
 
+configure do
+  enable :cross_origin
+end
+before do
+  response.headers['Access-Control-Allow-Origin'] = '*'
+end
+
+# routes...
+options "*" do
+  response.headers["Allow"] = "GET, PUT, POST, DELETE, OPTIONS"
+  response.headers["Access-Control-Allow-Headers"] = "Authorization, Content-Type, Accept, X-User-Email, X-Auth-Token"
+  response.headers["Access-Control-Allow-Origin"] = "*"
+  200
+end
+
 get '/:id' do
   link = LinkHitsController.create(params.merge({ ip: request.ip }))
   redirect link
