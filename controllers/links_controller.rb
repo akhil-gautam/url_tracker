@@ -28,7 +28,12 @@ module LinksController
   def update(params)
     validate_params(params)
     params.delete(:token)
-    Link.update(params)
+    r = Link.update({
+      id: params[:id],
+      short_link: params[:short_link],
+      original_link: params[:original_link],
+      title: params[:title]
+    })
   end
 
   def link_params(params)

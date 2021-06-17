@@ -46,6 +46,18 @@ class Link
     end
   end
 
+  def self.update(params)
+    Lib::HarperOrm.new.update(
+      'links',
+      {
+        short_link: params[:short_link],
+        original_link: params[:original_link],
+        title: params[:title],
+        id: params[:id]
+      }
+    )
+  end
+
   def self.find_by(params)
     Lib::HarperOrm.new.find_by('links', params.keys.first, params.values.first)
   end

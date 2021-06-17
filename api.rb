@@ -54,21 +54,26 @@ namespace '/api/v1' do
     halt 422, { message: e.message }.to_json
   end
 
-  post '/links' do
-    if params[:token].length == 24 && User.exists?({ token: params[:token]})
-      result = LinksController.create(params)
-      { url: request.base_url + '/' + result }.to_json
+  post '/update_link' do
+    if params[:token].length == 24 && Link.exists?({ id: params[:id]})
+      existing_short_link = Link.find_by({ short_link: params[:short_link]}).first
+      if existing_short_link.nil? || existing_short_link["id"] == params[:id]
+        result = LinksController.update(params)
+        { message: "Updated successfuly."}.to_json
+      else
+        halt 404, { message: "Short link is already taken."}.to_json
+      end
     else
-      halt 401, { message: "Can't find the user."}.to_json
+      halt 401, { message: "Can't find the link."}.to_json
     end
   rescue Exception => e
     halt 422, { message: e.message }.to_json
   end
 
-  patch '/links/:id ' do
+  post '/links' do
     if params[:token].length == 24 && User.exists?({ token: params[:token]})
-      result = LinksController.update(params)
-      { message: "Updated successfuly."}.to_json
+      result = LinksController.create(params)
+      { url: request.base_url + '/' + result }.to_json
     else
       halt 401, { message: "Can't find the user."}.to_json
     end
@@ -82,4 +87,8 @@ namespace '/api/v1' do
     halt 422, { message: e.message }.to_json
   end
 
+end
+
+Sinatra::Application.routes["POST"].each do |route|
+  puts route[0]
 end
