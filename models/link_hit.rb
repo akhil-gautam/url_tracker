@@ -22,7 +22,7 @@ class LinkHit
       {
         link_id: params[:link_id],
         location: "#{ip_data["city"]}/#{ip_data["country_name"]}",
-        referrer: params[:referrer] || 'N/A'
+        referrer: params[:referrer] || 'Direct Link'
       }
     )
   end

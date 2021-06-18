@@ -22,7 +22,7 @@ module LinksController
   end
 
   def show(params)
-    Link.find(params[:id])
+    Link.find_by(params).first
   end
 
   def update(params)

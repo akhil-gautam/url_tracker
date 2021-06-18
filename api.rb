@@ -82,6 +82,12 @@ namespace '/api/v1' do
     halt 422, { message: e.message }.to_json
   end
 
+  get '/links/:id' do
+    LinksController.show({short_link: params[:id]}).to_json
+  rescue Exception => e
+    halt 422, { message: e.message }.to_json
+  end
+
   get '/links/:id/hits' do
     LinkHitsController.index(params).to_json
   rescue Exception => e
