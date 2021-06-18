@@ -6,6 +6,29 @@ module LinkHitsController
     LinkHit.find_by({ link_id: params[:id] })
   end
 
+  def analytics(params)
+    validate_params(params)
+    hits = LinkHit.find_by({ link_id: params[:id] })
+    if hits.length == 0
+      return nil
+    end
+    location = {}
+    referrer = {}
+    hits.each do|h|
+      if location.include? h["location"]
+        location[h["location"]] += 1
+      else  
+        location[h["location"]] = 1
+      end
+      if referrer.include? h["referrer"]
+        referrer[h["referrer"]] += 1
+      else  
+        referrer[h["referrer"]] = 1
+      end
+    end
+    { location: location, referrer: referrer }
+  end
+
   def create(params)
     link = get_link(params[:id])
     LinkHit.create(link_hit_params(params.merge({ link_id: link["id"]})))

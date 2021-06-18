@@ -12,6 +12,7 @@ Dir["./controllers/*.rb"].each {|file| load file }
 configure do
   enable :cross_origin
 end
+
 before do
   response.headers['Access-Control-Allow-Origin'] = '*'
 end
@@ -83,6 +84,12 @@ namespace '/api/v1' do
 
   get '/links/:id/hits' do
     LinkHitsController.index(params).to_json
+  rescue Exception => e
+    halt 422, { message: e.message }.to_json
+  end
+  
+  get '/links/:id/analytics' do
+    LinkHitsController.analytics(params).to_json
   rescue Exception => e
     halt 422, { message: e.message }.to_json
   end

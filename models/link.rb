@@ -38,7 +38,7 @@ class Link
         'links',
         {
           short_link: params[:short_link],
-          original_link: params[:original_link],
+          original_link: smart_add_url_protocol(params[:original_link]),
           title: params[:title],
           user_id: params[:user_id]
         }
@@ -51,7 +51,7 @@ class Link
       'links',
       {
         short_link: params[:short_link],
-        original_link: params[:original_link],
+        original_link: smart_add_url_protocol(params[:original_link]),
         title: params[:title],
         id: params[:id]
       }
@@ -69,5 +69,12 @@ class Link
   def self.exists?(params)
     result = find_by(params)
     result.is_a?(Array) && result.length >= 1
+  end
+
+  def self.smart_add_url_protocol(url)
+    unless url[/\Ahttp:\/\//] || url[/\Ahttps:\/\//]
+      return "https://#{url}"
+    end
+    url
   end
 end
