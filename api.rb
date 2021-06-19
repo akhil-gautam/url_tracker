@@ -83,7 +83,13 @@ namespace '/api/v1' do
   end
 
   get '/links/:id' do
-    LinksController.show({short_link: params[:id]}).to_json
+    link = LinksController.show({short_link: params[:id]})
+    if link
+      LinkHitsController.create(params.merge({ ip: request.ip }))
+      link.to_json
+    else
+      raise Exception, 'Invalid Link'
+    end
   rescue Exception => e
     halt 422, { message: e.message }.to_json
   end
