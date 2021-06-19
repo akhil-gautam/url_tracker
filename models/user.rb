@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'bcrypt'
 
 class User
@@ -12,7 +14,7 @@ class User
 
   def save
     if exists?({ email: @email })
-      raise "User with this email already exists."
+      raise 'User with this email already exists.'
     else
       @db.create_record('users', { email: @email, password: @hashed_password, token: @token })
     end
@@ -20,18 +22,18 @@ class User
 
   def self.validate(params)
     found_user = find_by({ email: params[:email] }).first
-    if found_user.length == 0
-      raise "User is not registered with this email."
-    elsif Password.new(found_user["password"]) != params[:password]
-      raise "Either email or password is incorrect!"
+    if found_user.length.zero?
+      raise 'User is not registered with this email.'
+    elsif Password.new(found_user['password']) != params[:password]
+      raise 'Either email or password is incorrect!'
     else
       found_user
     end
   end
-  
+
   def self.create(params)
     if exists?({ email: params[:email] })
-      raise "User with this email already exists."
+      raise 'User with this email already exists.'
     else
       Lib::HarperOrm.new.create_record(
         'users',

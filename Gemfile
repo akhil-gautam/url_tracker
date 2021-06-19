@@ -1,13 +1,19 @@
+# frozen_string_literal: true
+
 source 'https://rubygems.org'
-ruby "2.7.3"
+ruby '2.7.3'
+gem 'bcrypt'
+gem 'httparty'
+gem 'rack-contrib'
 gem 'sinatra'
 gem 'sinatra-contrib'
-gem 'httparty'
-gem 'pry'
-gem 'bcrypt'
 gem 'sinatra-cross_origin'
-gem 'rack-contrib'
+
+group :development do
+  gem 'pry'
+  gem 'rubocop', require: false
+end
 
 group :production do
-  gem "puma"
+  gem 'puma'
 end

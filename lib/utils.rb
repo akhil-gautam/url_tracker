@@ -1,8 +1,10 @@
+# frozen_string_literal: true
+
 require 'httparty'
 
 module Utils
-  IPDATA_API_KEY = "974d320fd436e6373303f33e09551220e6a0d314dba57fb18972e78d"
-  IPDATA_API_URL = "https://api.ipdata.co/"
+  IPDATA_API_KEY = '974d320fd436e6373303f33e09551220e6a0d314dba57fb18972e78d'
+  IPDATA_API_URL = 'https://api.ipdata.co/'
 
   module_function
 

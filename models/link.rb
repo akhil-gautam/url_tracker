@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 
 class Link
   def initialize(original_link, short_link, title, user_id)
@@ -10,29 +11,29 @@ class Link
 
   def save
     if exists?({ short_link: @short_link })
-      raise "Already taken."
+      raise 'Already taken.'
     else
-      @db.create_record('links', { 
-        short_link: @short_link,
-        original_link: @original_link,
-        title: @title,
-        user_id: @user_id
-      })
+      @db.create_record('links', {
+                          short_link: @short_link,
+                          original_link: @original_link,
+                          title: @title,
+                          user_id: @user_id
+                        })
     end
   end
 
   def self.validate(params)
     found_link = find_by({ short_link: params[:short_link] }).first
-    if found_link.length != 0
-      raise "Already taken."
+    if !found_link.empty?
+      raise 'Already taken.'
     else
       true
     end
   end
-  
+
   def self.create(params)
     if exists?({ short_link: params[:short_link] })
-      raise "Already taken."
+      raise 'Already taken.'
     else
       Lib::HarperOrm.new.create_record(
         'links',
@@ -72,9 +73,8 @@ class Link
   end
 
   def self.smart_add_url_protocol(url)
-    unless url[/\Ahttp:\/\//] || url[/\Ahttps:\/\//]
-      return "https://#{url}"
-    end
+    return "https://#{url}" unless url[%r{\Ahttp://}] || url[%r{\Ahttps://}]
+
     url
   end
 end

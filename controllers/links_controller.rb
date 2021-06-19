@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module LinksController
   module_function
 
@@ -5,7 +7,7 @@ module LinksController
     # Commented this out to save API call latency.
     # validate_user(params)
     validate_params(params)
-    Link.find_by({user_id: params[:id] })
+    Link.find_by({ user_id: params[:id] })
   end
 
   def create(params)
@@ -29,16 +31,16 @@ module LinksController
     validate_params(params)
     params.delete(:token)
     r = Link.update({
-      id: params[:id],
-      short_link: params[:short_link],
-      original_link: params[:original_link],
-      title: params[:title]
-    })
+                      id: params[:id],
+                      short_link: params[:short_link],
+                      original_link: params[:original_link],
+                      title: params[:title]
+                    })
   end
 
   def link_params(params)
     if params[:original_link].nil?
-      raise ArgumentError, "Original link must be provided."
+      raise ArgumentError, 'Original link must be provided.'
     else
       { original_link: params[:original_link], title: params[:title], user_id: params[:user_id] }
     end
@@ -46,7 +48,7 @@ module LinksController
 
   def validate_params(params)
     if params[:id].nil?
-      raise ArgumentError, "ID must be provided."
+      raise ArgumentError, 'ID must be provided.'
     else
       true
     end

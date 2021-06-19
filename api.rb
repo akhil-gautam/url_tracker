@@ -1,13 +1,14 @@
+# frozen_string_literal: true
+
 require 'sinatra'
 require 'httparty'
-require "sinatra/namespace"
-require 'pry'
+require 'sinatra/namespace'
 
 require_relative './lib/harper_orm'
 require_relative './lib/utils'
 
-Dir["./models/*.rb"].each {|file| load file }
-Dir["./controllers/*.rb"].each {|file| load file }
+Dir['./models/*.rb'].each { |file| load file }
+Dir['./controllers/*.rb'].each { |file| load file }
 
 configure do
   enable :cross_origin
@@ -28,7 +29,7 @@ end
 get '/:id' do
   link = LinkHitsController.create(params.merge({ ip: request.ip }))
   redirect link
-rescue Exception => e
+rescue StandardError => e
   redirect request.base_url
 end
 
@@ -39,75 +40,74 @@ namespace '/api/v1' do
 
   post '/users' do
     UsersController.create(params).to_json
-  rescue Exception => e
-    halt 422, { message: e.message}.to_json
+  rescue StandardError => e
+    halt 422, { message: e.message }.to_json
   end
 
   post '/login' do
     UsersController.login(params).to_json
-  rescue Exception => e
-    halt 422, { message: e.message}.to_json
+  rescue StandardError => e
+    halt 422, { message: e.message }.to_json
   end
 
   get '/users/:id/links' do
     LinksController.index(params).to_json
-  rescue Exception => e
+  rescue StandardError => e
     halt 422, { message: e.message }.to_json
   end
 
   post '/update_link' do
-    if params[:token].length == 24 && Link.exists?({ id: params[:id]})
-      existing_short_link = Link.find_by({ short_link: params[:short_link]}).first
-      if existing_short_link.nil? || existing_short_link["id"] == params[:id]
+    if params[:token].length == 24 && Link.exists?({ id: params[:id] })
+      existing_short_link = Link.find_by({ short_link: params[:short_link] }).first
+      if existing_short_link.nil? || existing_short_link['id'] == params[:id]
         result = LinksController.update(params)
-        { message: "Updated successfuly."}.to_json
+        { message: 'Updated successfuly.' }.to_json
       else
-        halt 404, { message: "Short link is already taken."}.to_json
+        halt 404, { message: 'Short link is already taken.' }.to_json
       end
     else
-      halt 401, { message: "Can't find the link."}.to_json
+      halt 401, { message: "Can't find the link." }.to_json
     end
-  rescue Exception => e
+  rescue StandardError => e
     halt 422, { message: e.message }.to_json
   end
 
   post '/links' do
-    if params[:token].length == 24 && User.exists?({ token: params[:token]})
+    if params[:token].length == 24 && User.exists?({ token: params[:token] })
       result = LinksController.create(params)
-      { url: request.base_url + '/' + result }.to_json
+      { url: "#{request.base_url}/#{result}" }.to_json
     else
-      halt 401, { message: "Can't find the user."}.to_json
+      halt 401, { message: "Can't find the user." }.to_json
     end
-  rescue Exception => e
+  rescue StandardError => e
     halt 422, { message: e.message }.to_json
   end
 
   get '/links/:id' do
-    link = LinksController.show({short_link: params[:id]})
+    link = LinksController.show({ short_link: params[:id] })
     if link
       LinkHitsController.create(params.merge({ ip: request.ip }))
       link.to_json
     else
-      raise Exception, 'Invalid Link'
+      raise StandardError, 'Invalid Link'
     end
-  rescue Exception => e
+  rescue StandardError => e
     halt 422, { message: e.message }.to_json
   end
 
   get '/links/:id/hits' do
     LinkHitsController.index(params).to_json
-  rescue Exception => e
+  rescue StandardError => e
     halt 422, { message: e.message }.to_json
   end
-  
+
   get '/links/:id/analytics' do
     LinkHitsController.analytics(params).to_json
-  rescue Exception => e
+  rescue StandardError => e
     halt 422, { message: e.message }.to_json
   end
-
 end
 
-Sinatra::Application.routes["POST"].each do |route|
+Sinatra::Application.routes['POST'].each do |route|
   puts route[0]
 end
